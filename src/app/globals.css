@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Cooper BT';
+  src: url('/fonts/cooper-bt-light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  html {
+    font-family: 'Cooper BT', Inter, system-ui, sans-serif;
+  }
+
+  body {
+    @apply bg-paper text-ink;
+  }
+}
+
+@layer components {
+  .reading-container {
+    @apply max-w-4xl mx-auto px-8 py-12;
+  }
+
+  .highlight {
+    @apply bg-yellow-200 px-1 rounded;
+  }
+}
