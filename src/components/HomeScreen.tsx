@@ -1,8 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import Link from 'next/link'
-import { Book, Sparkles, ArrowRight, FileText, Github, Mail, FileCode } from 'lucide-react'
+import { Book, Sparkles, FileText, Github, Mail, FileCode } from 'lucide-react'
 import ReaderDemo from './ReaderDemo'
 
 export default function HomeScreen() {
@@ -30,7 +29,7 @@ export default function HomeScreen() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#14120b] text-[#f7f7f4] overflow-hidden relative">
+    <div className="min-h-screen bg-[#14120b] text-[#f7f7f4] overflow-x-hidden relative">
       {/* Gradient Mesh Background - Scattered Orbs */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-[5%] left-[10%] w-[250px] h-[250px] rounded-full bg-[#d9955f] opacity-[0.08] blur-[65px]"></div>
@@ -97,7 +96,7 @@ export default function HomeScreen() {
       </div>
 
       {/* Hero Section */}
-      <main className="relative z-10 px-8 min-h-screen flex items-center">
+      <main className="relative z-10 px-8 min-h-screen flex items-start xl:items-center pb-12 xl:pb-0">
         <div className="max-w-7xl mx-auto w-full grid grid-cols-1 xl:grid-cols-2 gap-12 items-start xl:items-center">
           {/* Left: Hero Content */}
           <div className="flex flex-col justify-start xl:justify-between items-start text-left ml-6 xl:ml-[75px] pt-36 xl:pt-0 xl:h-[580px]">
@@ -136,13 +135,6 @@ export default function HomeScreen() {
 
               {/* CTA Buttons */}
               <div className="flex items-center gap-2.5">
-                <Link
-                  href="/early-access"
-                  className="group px-5 py-2.5 rounded-lg bg-[#f7f7f4] text-[#14120b] hover:bg-[#f7f7f4]/90 transition-all duration-200 font-semibold text-sm flex items-center gap-1.5"
-                >
-                  Early Access
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                </Link>
                 <button className="px-5 py-2.5 rounded-lg bg-[#f7f7f4]/5 hover:bg-[#f7f7f4]/10 border border-[#f7f7f4]/10 transition-all duration-200 font-semibold text-sm cursor-default">
                   Learn More
                 </button>
