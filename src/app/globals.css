@@ -13,10 +13,13 @@
 @layer base {
   html {
     font-family: 'Cooper BT', Inter, system-ui, sans-serif;
+    @apply bg-paper;
+    overscroll-behavior: none;
   }
 
   body {
     @apply bg-paper text-ink;
+    overscroll-behavior: none;
   }
 }
 
