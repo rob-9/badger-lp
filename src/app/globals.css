@@ -13,12 +13,19 @@
 @layer base {
   html {
     font-family: 'Cooper BT', 'Plus Jakarta Sans', system-ui, sans-serif;
-    scroll-behavior: smooth;
     overscroll-behavior: none;
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
   html::-webkit-scrollbar {
+    display: none;
+  }
+
+  .snap-container {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .snap-container::-webkit-scrollbar {
     display: none;
   }
 

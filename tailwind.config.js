@@ -28,8 +28,8 @@ module.exports = {
         'sans': ['"Cooper BT"', '"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
-        '4xl': '2rem',
-        '5xl': '3rem',
+        '4xl': '1.25rem',
+        '5xl': '1.5rem',
       },
     },
   },

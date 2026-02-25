@@ -45,9 +45,11 @@ function Navbar() {
   const [morphed, setMorphed] = useState(false)
 
   useEffect(() => {
-    const handleScroll = () => setMorphed(window.scrollY > window.innerHeight * 0.05)
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+    const container = document.querySelector('.snap-container')
+    if (!container) return
+    const handleScroll = () => setMorphed(container.scrollTop > window.innerHeight * 0.05)
+    container.addEventListener('scroll', handleScroll, { passive: true })
+    return () => container.removeEventListener('scroll', handleScroll)
   }, [])
 
   return (
@@ -88,7 +90,7 @@ function Navbar() {
           href="#waitlist"
           className="text-sm text-copper transition-colors duration-200 hover:opacity-80 mr-2"
         >
-          Waitlist
+          Join Waitlist
         </a>
       </div>
     </nav>
@@ -599,9 +601,9 @@ function Hero() {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
 
-      tl.fromTo(headlineRef.current, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, delay: 0.2 })
-        .fromTo(ctaRef.current, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7 }, '-=0.4')
-        .fromTo(demoRef.current, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9 }, '-=0.3')
+      tl.fromTo(headlineRef.current, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, delay: 0.15 })
+        .fromTo(ctaRef.current, { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7 }, '-=0.5')
+        .fromTo(demoRef.current, { y: 25, opacity: 0 }, { y: 0, opacity: 1, duration: 1.0 }, '-=0.3')
     }, sectionRef)
 
     return () => ctx.revert()
@@ -678,7 +680,7 @@ function Hero() {
 
 // ── Card 1: Spoiler Shield — shows the actual spoiler warning flow ──
 
-function SpoilerShieldDemo() {
+function SpoilerShieldDemo({ active }: { active: boolean }) {
   type Phase = 'idle' | 'highlight' | 'question' | 'warning'
   const [phase, setPhase] = useState<Phase>('idle')
   const [cycle, setCycle] = useState(0)
@@ -690,6 +692,7 @@ function SpoilerShieldDemo() {
   ]
 
   useEffect(() => {
+    if (!active) return
     let cancelled = false
     const run = async () => {
       await wait(800)
@@ -708,7 +711,7 @@ function SpoilerShieldDemo() {
     }
     run()
     return () => { cancelled = true }
-  }, [cycle])
+  }, [active, cycle])
 
   return (
     <div className="bg-[#1e1c16] rounded-4xl border border-cream/[0.06] p-6 md:p-8 h-full flex flex-col overflow-hidden">
@@ -797,7 +800,7 @@ function SpoilerShieldDemo() {
 
 // ── Card 2: Pattern Detection — shows AI finding connected motifs ──
 
-function PatternDetectionDemo() {
+function PatternDetectionDemo({ active }: { active: boolean }) {
   type Phase = 'idle' | 'highlight1' | 'highlight2' | 'highlight3' | 'connect'
   const [phase, setPhase] = useState<Phase>('idle')
   const [cycle, setCycle] = useState(0)
@@ -817,6 +820,7 @@ function PatternDetectionDemo() {
   }
 
   useEffect(() => {
+    if (!active) return
     let cancelled = false
     const run = async () => {
       await wait(600)
@@ -838,7 +842,7 @@ function PatternDetectionDemo() {
     }
     run()
     return () => { cancelled = true }
-  }, [cycle])
+  }, [active, cycle])
 
   const highlighted = activeHighlights[phase]
 
@@ -909,7 +913,7 @@ function PatternDetectionDemo() {
 
 // ── Card 3: Memory Recall — shows AI connecting highlights across pages ──
 
-function MemoryRecallDemo() {
+function MemoryRecallDemo({ active }: { active: boolean }) {
   type Phase = 'idle' | 'reading' | 'question' | 'recall'
   const [phase, setPhase] = useState<Phase>('idle')
   const [cycle, setCycle] = useState(0)
@@ -918,6 +922,7 @@ function MemoryRecallDemo() {
   const aiResponse = 'In chapter 1, you highlighted Tom\u2019s description: "a sturdy straw-haired man" with "two shining arrogant eyes." Now Gatsby is an "elegant young roughneck." Fitzgerald is mapping a class study through physical contrast \u2014 old money\u2019s brute confidence vs. new money\u2019s studied performance.'
 
   useEffect(() => {
+    if (!active) return
     let cancelled = false
     const run = async () => {
       setStreamedChars(0)
@@ -952,7 +957,7 @@ function MemoryRecallDemo() {
     }
     run()
     return () => { cancelled = true }
-  }, [cycle])
+  }, [active, cycle])
 
   return (
     <div className="bg-[#1e1c16] rounded-4xl border border-cream/[0.06] p-6 md:p-8 h-full flex flex-col overflow-hidden">
@@ -1065,34 +1070,56 @@ function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
+function useInView(ref: React.RefObject<HTMLElement | null>, threshold = 0.3) {
+  const [inView, setInView] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const root = document.querySelector('.snap-container')
+    const obs = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { root, threshold },
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [ref, threshold])
+  return inView
+}
+
 function Features() {
   const sectionRef = useRef<HTMLElement>(null)
   const titleRef = useRef<HTMLDivElement>(null)
   const cardsRef = useRef<HTMLDivElement>(null)
+  const visible = useInView(sectionRef, 0.15)
+  const [demosActive, setDemosActive] = useState(false)
 
   useEffect(() => {
+    const scroller = document.querySelector('.snap-container')
     const ctx = gsap.context(() => {
-      gsap.fromTo(titleRef.current, { y: 40, opacity: 0 }, {
+      gsap.fromTo(titleRef.current, { y: 20, opacity: 0 }, {
         y: 0,
         opacity: 1,
-        duration: 0.9,
+        duration: 1.2,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: titleRef.current,
-          start: 'top 85%',
+          start: 'top 70%',
+          scroller,
         },
       })
 
       if (cardsRef.current) {
-        gsap.fromTo(cardsRef.current.children, { y: 50, opacity: 0 }, {
+        gsap.fromTo(cardsRef.current.children, { y: 30, opacity: 0 }, {
           y: 0,
           opacity: 1,
-          duration: 0.8,
-          stagger: 0.15,
+          duration: 1.2,
+          stagger: 0.18,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: cardsRef.current,
-            start: 'top 80%',
+            start: 'top 70%',
+            scroller,
+            onEnter: () => setTimeout(() => setDemosActive(true), 900),
           },
         })
       }
@@ -1104,19 +1131,19 @@ function Features() {
   return (
     <section ref={sectionRef} id="features" className="relative py-20 px-8 md:px-16">
       <div className="max-w-6xl mx-auto">
-        <div ref={titleRef} className="text-center mb-16 opacity-0">
+        <div ref={titleRef} className="text-center mb-8 opacity-0">
           <h2 className="font-drama italic text-copper text-4xl md:text-6xl lg:text-7xl mb-4">
             Capabilities
           </h2>
           <p className="text-cream/50 max-w-lg mx-auto text-base leading-relaxed">
-            Badger understands your context, respects your progress, and helps you make meaningful connections. 
+            Badger understands your context, respects your progress, and helps you make meaningful connections.
           </p>
         </div>
 
         <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-6 md:grid-rows-[480px] [&>*]:opacity-0">
-          <SpoilerShieldDemo />
-          <PatternDetectionDemo />
-          <MemoryRecallDemo />
+          <SpoilerShieldDemo active={demosActive} />
+          <PatternDetectionDemo active={demosActive} />
+          <MemoryRecallDemo active={demosActive} />
         </div>
       </div>
     </section>
@@ -1133,27 +1160,30 @@ function Philosophy() {
   const line2Ref = useRef<HTMLParagraphElement>(null)
 
   useEffect(() => {
+    const scroller = document.querySelector('.snap-container')
     const ctx = gsap.context(() => {
-      gsap.fromTo(line1Ref.current, { y: 50, opacity: 0 }, {
+      gsap.fromTo(line1Ref.current, { y: 30, opacity: 0 }, {
         y: 0,
         opacity: 1,
-        duration: 1,
+        duration: 1.0,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 60%',
+          start: 'top 75%',
+          scroller,
         },
       })
 
-      gsap.fromTo(line2Ref.current, { y: 50, opacity: 0 }, {
+      gsap.fromTo(line2Ref.current, { y: 30, opacity: 0 }, {
         y: 0,
         opacity: 1,
-        duration: 1,
-        delay: 0.3,
+        duration: 1.0,
+        delay: 0.2,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 60%',
+          start: 'top 75%',
+          scroller,
         },
       })
     }, sectionRef)
@@ -1165,7 +1195,7 @@ function Philosophy() {
     <section
       ref={sectionRef}
       id="about"
-      className="relative py-32 md:py-44 px-8 md:px-16 bg-charcoal overflow-hidden"
+      className="relative min-h-screen flex items-center px-8 md:px-16 bg-charcoal overflow-hidden"
     >
       {/* Parallax texture */}
       <div className="absolute inset-0 opacity-[0.07]">
@@ -1205,18 +1235,136 @@ function Philosophy() {
 // ── Protocol Visual 1: Upload — file formats dropping in ──
 
 function UploadVisual() {
-  const formats = ['EPUB', 'PDF', 'TXT', 'DOCX']
+  type Phase = 'idle' | 'hover' | 'click' | 'selected' | 'processing' | 'ready'
+  const [phase, setPhase] = useState<Phase>('idle')
+  const [progress, setProgress] = useState(0)
+  const [cycle, setCycle] = useState(0)
+
+  const cursorPos = {
+    idle:       { x: 75, y: 80 },
+    hover:      { x: 52, y: 62 },
+    click:      { x: 52, y: 62 },
+    selected:   { x: 52, y: 62 },
+    processing: { x: 52, y: 62 },
+    ready:      { x: 52, y: 62 },
+  }
+
+  useEffect(() => {
+    let cancelled = false
+    const run = async () => {
+      setProgress(0)
+      setPhase('idle')
+      await wait(500)
+      if (cancelled) return
+      setPhase('hover')
+      await wait(700)
+      if (cancelled) return
+      setPhase('click')
+      await wait(200)
+      if (cancelled) return
+      setPhase('selected')
+      await wait(800)
+      if (cancelled) return
+      setPhase('processing')
+      let p = 0
+      const interval = setInterval(() => {
+        if (cancelled) { clearInterval(interval); return }
+        p += 2
+        if (p >= 100) { setProgress(100); clearInterval(interval) }
+        else setProgress(p)
+      }, 25)
+      await wait(1800)
+      if (cancelled) return
+      clearInterval(interval)
+      setProgress(100)
+      setPhase('ready')
+      await wait(3000)
+      if (cancelled) return
+      setCycle((c) => c + 1)
+    }
+    run()
+    return () => { cancelled = true }
+  }, [cycle])
+
+  const showCursor = phase === 'idle' || phase === 'hover' || phase === 'click'
+  const pos = cursorPos[phase]
+  const btnActive = phase === 'hover' || phase === 'click'
 
   return (
-    <div className="flex items-center gap-3">
-      {formats.map((ext) => (
-        <div key={ext} className="flex flex-col items-center gap-1.5">
-          <div className="w-12 h-14 rounded-lg flex items-center justify-center bg-cream/[0.04] border border-cream/[0.08]">
-            <FileText className="w-5 h-5 text-cream/30" />
+    <div className="w-full max-w-xs bg-[#1a1a1a] rounded-xl overflow-hidden border border-white/[0.06] relative">
+      <div className="flex items-center gap-1.5 px-3 py-1.5 border-b border-white/[0.06] bg-[#1e1e1e]">
+        <BookOpen className="w-3 h-3 text-copper" />
+        <span className="text-[9px] text-white/50 font-medium">Library</span>
+        <span className="ml-auto text-[8px] text-white/20">3 books</span>
+      </div>
+
+      <div className="relative px-4 py-5 min-h-[160px]">
+        <div className="flex items-end gap-2 mb-4">
+          {['bg-white/[0.04]', 'bg-white/[0.06]', 'bg-white/[0.04]'].map((bg, i) => (
+            <div key={i} className={`w-8 rounded-sm ${bg}`} style={{ height: `${28 + i * 6}px` }} />
+          ))}
+          <div className="w-8 h-8 rounded-sm border border-dashed border-white/10 flex items-center justify-center">
+            <span className="text-white/15 text-[10px]">+</span>
           </div>
-          <span className="font-mono text-[9px] text-cream/40">{ext}</span>
         </div>
-      ))}
+
+        <div className="flex justify-center">
+          <div
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[9px] font-medium transition-all duration-200"
+            style={{
+              backgroundColor: btnActive ? 'rgba(217,149,95,0.2)' : 'rgba(217,149,95,0.1)',
+              color: '#d9955f',
+              boxShadow: btnActive ? '0 0 0 1px rgba(217,149,95,0.3)' : 'none',
+              transform: phase === 'click' ? 'scale(0.95)' : 'scale(1)',
+            }}
+          >
+            <FileText className="w-3 h-3" />
+            Upload Book
+          </div>
+        </div>
+
+        {(phase === 'selected' || phase === 'processing' || phase === 'ready') && (
+          <div className="absolute inset-0 bg-[#1a1a1a]/95 flex flex-col items-center justify-center gap-3 px-4 transition-opacity duration-300">
+            <div className="w-10 h-12 rounded-lg flex items-center justify-center border border-copper/25 bg-copper/[0.08]">
+              <FileText className="w-4 h-4 text-copper" />
+            </div>
+            <span className="text-[9px] text-white/60 font-medium">gatsby.epub</span>
+            {(phase === 'processing' || phase === 'ready') && (
+              <div className="w-full max-w-[140px]">
+                <div className="h-1 bg-white/[0.06] rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-100"
+                    style={{
+                      width: `${progress}%`,
+                      backgroundColor: phase === 'ready' ? '#34d399' : '#d9955f',
+                    }}
+                  />
+                </div>
+                <span className="block text-center text-[8px] text-white/30 mt-1">
+                  {phase === 'ready' ? 'Indexed & ready' : `Analyzing... ${progress}%`}
+                </span>
+              </div>
+            )}
+            {phase === 'ready' && (
+              <div className="flex items-center gap-1 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+                <CheckCircle className="w-2.5 h-2.5 text-emerald-400" />
+                <span className="text-[8px] text-emerald-400 font-medium">Book ready</span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {showCursor && (
+          <div
+            className="absolute pointer-events-none z-10 transition-all duration-500 ease-out"
+            style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
+          >
+            <svg width="14" height="18" viewBox="0 0 14 18" fill="none" className="drop-shadow-lg">
+              <path d="M0 0L12.5 10H5.5L2.5 17.5L0 0Z" fill="white" fillOpacity={phase === 'click' ? 0.95 : 0.8} />
+            </svg>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
@@ -1463,62 +1611,67 @@ const PROTOCOL_STEPS = [
 
 function Protocol() {
   const sectionRef = useRef<HTMLElement>(null)
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([])
+  const cardsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    const scroller = document.querySelector('.snap-container')
     const ctx = gsap.context(() => {
-      cardsRef.current.forEach((card) => {
-        if (!card) return
-
-        gsap.fromTo(card, { y: 60, opacity: 0 }, {
+      if (cardsRef.current) {
+        gsap.fromTo(cardsRef.current.children, { y: 40, opacity: 0 }, {
           y: 0,
           opacity: 1,
-          duration: 0.8,
+          duration: 1.2,
+          stagger: 0.2,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: card,
-            start: 'top 85%',
+            trigger: cardsRef.current,
+            start: 'top 70%',
+            scroller,
           },
         })
-      })
+      }
     }, sectionRef)
-
     return () => ctx.revert()
   }, [])
 
   return (
-    <section ref={sectionRef} id="protocol" className="relative py-20 px-8 md:px-16">
-      <div className="max-w-5xl mx-auto mb-6 text-center">
-        <h2 className="font-drama italic text-copper text-4xl md:text-6xl lg:text-7xl">
-          How It Works
-        </h2>
-      </div>
+    <section
+      ref={sectionRef}
+      id="protocol"
+      className="relative py-24 md:py-32 px-8 md:px-16"
+    >
+      <div className="max-w-5xl mx-auto w-full">
+        <div className="text-center mb-14">
+          <h2 className="font-drama italic text-copper text-4xl md:text-6xl lg:text-7xl">
+            How It Works
+          </h2>
+        </div>
 
-      <div className="max-w-5xl mx-auto">
-        {PROTOCOL_STEPS.map((step, i) => {
-          const Visual = step.visual
-          return (
-            <div
-              key={step.number}
-              ref={(el) => { cardsRef.current[i] = el }}
-              className="w-full bg-[#1e1c16] rounded-5xl border border-cream/[0.06] p-8 md:p-12 mb-8 flex flex-col md:flex-row items-start gap-8 md:gap-16 md:h-[340px] opacity-0"
-              style={{ boxShadow: '0 8px 40px rgba(0,0,0,0.2)' }}
-            >
-              <div className="flex-1 self-center">
-                <span className="font-mono text-sm text-copper/60">{step.number}</span>
-                <h3 className="font-heading font-bold text-cream text-2xl md:text-4xl mt-2 mb-4 tracking-tight">
-                  {step.title}
-                </h3>
-                <p className="text-cream/50 text-base md:text-lg max-w-md leading-relaxed">
-                  {step.description}
-                </p>
+        <div ref={cardsRef} className="flex flex-col gap-8">
+          {PROTOCOL_STEPS.map((step) => {
+            const Visual = step.visual
+            return (
+              <div
+                key={step.number}
+                className="w-full bg-[#1e1c16] rounded-3xl border border-cream/[0.06] p-8 md:p-12 flex flex-col md:flex-row items-start gap-8 md:gap-16 opacity-0"
+                style={{ boxShadow: '0 8px 40px rgba(0,0,0,0.2)' }}
+              >
+                <div className="flex-1 self-center">
+                  <span className="font-mono text-sm text-copper/60">{step.number}</span>
+                  <h3 className="font-heading font-bold text-cream text-2xl md:text-4xl mt-2 mb-4 tracking-tight">
+                    {step.title}
+                  </h3>
+                  <p className="text-cream/50 text-base md:text-lg max-w-md leading-relaxed">
+                    {step.description}
+                  </p>
+                </div>
+                <div className="flex-shrink-0 flex justify-center self-center overflow-hidden md:max-h-[260px]">
+                  <Visual />
+                </div>
               </div>
-              <div className="flex-shrink-0 flex justify-center self-center overflow-hidden md:max-h-[260px]">
-                <Visual />
-              </div>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
       </div>
     </section>
   )
@@ -1529,28 +1682,9 @@ function Protocol() {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 function GetStarted() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(contentRef.current, { y: 60, opacity: 0 }, {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: contentRef.current,
-          start: 'top 95%',
-        },
-      })
-    }, sectionRef)
-
-    return () => ctx.revert()
-  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -1583,10 +1717,9 @@ function GetStarted() {
   }
 
   return (
-    <section ref={sectionRef} id="waitlist" className="relative py-16 px-8 md:px-16">
+    <section id="waitlist" className="relative py-28 md:py-36 px-8 md:px-16">
       <div
-        ref={contentRef}
-        className="max-w-lg mx-auto text-center opacity-0"
+        className="max-w-lg mx-auto text-center"
       >
         <h2 className="font-heading font-bold text-cream text-4xl md:text-6xl tracking-tight mb-8">
           Try Badger.
@@ -1631,7 +1764,7 @@ function GetStarted() {
 
 function Footer() {
   return (
-    <footer className="bg-charcoal rounded-t-[4rem] px-8 md:px-16 pt-16 pb-10">
+    <footer className="bg-charcoal rounded-t-2xl px-8 md:px-16 pt-16 pb-10">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           {/* Brand */}
@@ -1701,13 +1834,8 @@ function Footer() {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 export default function HomeScreen() {
-  useEffect(() => {
-    window.history.scrollRestoration = 'manual'
-    window.scrollTo(0, 0)
-  }, [])
-
   return (
-    <div className="min-h-screen bg-charcoal text-cream overflow-x-hidden relative">
+    <div className="snap-container bg-charcoal text-cream overflow-x-hidden relative" style={{ height: '100vh', overflowY: 'auto' }}>
       <NoiseOverlay />
       <Navbar />
       <Hero />
