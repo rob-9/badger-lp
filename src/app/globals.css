@@ -16,6 +16,7 @@
     overscroll-behavior: none;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    font-size: 90%;
   }
   html::-webkit-scrollbar {
     display: none;
