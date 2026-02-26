@@ -1605,7 +1605,7 @@ function GetStarted() {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
-      setErrorMsg('Please enter a valid email.')
+      setErrorMsg('Invalid Email.')
       setStatus('error')
       return
     }
@@ -1637,32 +1637,33 @@ function GetStarted() {
         </h2>
 
         {status === 'success' ? (
-          <div className="flex items-center justify-center gap-2 text-copper text-sm font-medium">
+          <div className="flex items-center justify-center gap-2 text-copper text-sm font-medium animate-fade-in-up">
             <CheckCircle className="w-4 h-4" />
             You&apos;re on the list.
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="flex items-center gap-2 max-w-sm mx-auto">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => { setEmail(e.target.value); setErrorMsg('') }}
-              placeholder="you@example.com"
-              autoComplete="off"
-              className="flex-1 px-4 py-2.5 bg-transparent border border-cream/10 rounded-xl text-sm text-cream placeholder:text-cream/25 focus:outline-none focus:border-copper/50 transition-colors [&:-webkit-autofill]:[-webkit-text-fill-color:#f2f0e9] [&:-webkit-autofill]:[font-family:inherit] [&:-webkit-autofill]:[-webkit-box-shadow:0_0_0_1000px_#14120b_inset] [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s]"
-            />
-            <button
-              type="submit"
-              disabled={status === 'submitting'}
-              className="px-5 py-2.5 bg-cream text-charcoal text-sm font-semibold rounded-xl hover:bg-cream/90 transition-colors shrink-0 disabled:opacity-50"
-            >
-              {status === 'submitting' ? '...' : 'Join'}
-            </button>
-          </form>
-        )}
-
-        {errorMsg && (
-          <p className="text-xs text-red-400 mt-2">{errorMsg}</p>
+          <div className="max-w-sm mx-auto">
+            <form onSubmit={handleSubmit} noValidate className="flex items-center gap-2">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); setErrorMsg('') }}
+                placeholder="you@example.com"
+                autoComplete="off"
+                className="flex-1 px-4 py-2.5 bg-transparent border border-cream/10 rounded-xl text-sm text-cream placeholder:text-cream/25 focus:outline-none focus:border-copper/50 transition-colors [&:-webkit-autofill]:[-webkit-text-fill-color:#f2f0e9] [&:-webkit-autofill]:[font-family:inherit] [&:-webkit-autofill]:[-webkit-box-shadow:0_0_0_1000px_#14120b_inset] [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s]"
+              />
+              <button
+                type="submit"
+                disabled={status === 'submitting'}
+                className="px-5 py-2.5 bg-cream text-charcoal text-sm font-semibold rounded-xl hover:bg-cream/90 transition-colors shrink-0 disabled:opacity-50"
+              >
+                {status === 'submitting' ? '...' : 'Join'}
+              </button>
+            </form>
+            {errorMsg && (
+              <p className="text-xs text-red-400 mt-2 text-left pl-1">{errorMsg}</p>
+            )}
+          </div>
         )}
       </div>
     </section>
