@@ -617,11 +617,11 @@ function Hero() {
     >
       {/* Headline + CTA */}
       <div className="px-6 md:px-16 lg:px-[5rem] pt-28 pb-12 md:pt-32 md:pb-16">
-        <h1 ref={headlineRef} className="mb-8 opacity-0">
-          <span className="block font-heading font-bold text-[#edecec] text-xl md:text-2xl tracking-tight leading-tight mb-3">
+        <h1 ref={headlineRef} className="mb-12 opacity-0">
+          <span className="block font-heading font-bold text-[#edecec] text-xl md:text-2xl tracking-tight leading-tight -mb-2">
             BADGER IS READING
           </span>
-          <span className="block font-drama italic text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] leading-[0.9] -ml-1 bg-gradient-to-r from-copper via-amber-300 to-copper bg-clip-text text-transparent">
+          <span className="block font-drama italic text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] leading-[1.3] -ml-1 -mb-[0.4em] bg-gradient-to-r from-copper via-amber-300 to-copper bg-clip-text text-transparent">
             Redefined.
           </span>
         </h1>
