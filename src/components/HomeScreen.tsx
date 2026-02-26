@@ -621,7 +621,7 @@ function Hero() {
           <span className="block font-heading font-bold text-[#edecec] text-xl md:text-2xl tracking-tight leading-tight mb-3">
             BADGER IS READING
           </span>
-          <span className="block font-drama italic text-copper text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] leading-[0.9] -ml-1">
+          <span className="block font-drama italic text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] leading-[0.9] -ml-1 bg-gradient-to-r from-copper via-amber-300 to-copper bg-clip-text text-transparent">
             Redefined.
           </span>
         </h1>
@@ -1102,7 +1102,7 @@ function Features() {
     <section ref={sectionRef} id="features" className="relative py-20 px-8 md:px-16">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
-          <h2 className="font-drama italic text-copper text-4xl md:text-6xl lg:text-7xl mb-4">
+          <h2 className="font-drama italic text-4xl md:text-6xl lg:text-7xl mb-4 bg-gradient-to-r from-copper via-amber-300 to-copper bg-clip-text text-transparent">
             Capabilities
           </h2>
           <p className="text-cream/50 max-w-lg mx-auto text-base leading-relaxed">
@@ -1150,7 +1150,7 @@ function Philosophy() {
         </p>
         <p className="text-cream text-3xl md:text-5xl lg:text-6xl leading-[1.1]">
           Badger{' '}
-          <span className="font-drama italic text-copper">improves understanding</span>
+          <span className="font-drama italic bg-gradient-to-r from-copper via-amber-300 to-copper bg-clip-text text-transparent">improves understanding</span>
           {'  '}— an entirely new experience for readers.
         </p>
       </div>
@@ -1554,8 +1554,8 @@ function Protocol() {
       className="relative py-24 md:py-32 px-8 md:px-16"
     >
       <div className="max-w-5xl mx-auto w-full">
-        <div className="text-center mb-14">
-          <h2 className="font-drama italic text-copper text-4xl md:text-6xl lg:text-7xl">
+        <div className="text-center mb-8">
+          <h2 className="font-drama italic text-4xl md:text-6xl lg:text-7xl bg-gradient-to-r from-copper via-amber-300 to-copper bg-clip-text text-transparent">
             How It Works
           </h2>
         </div>
@@ -1632,7 +1632,7 @@ function GetStarted() {
   return (
     <section id="waitlist" className="relative py-28 md:py-36 px-8 md:px-16">
       <div className="max-w-lg mx-auto text-center">
-        <h2 className="font-heading font-bold text-cream text-4xl md:text-6xl tracking-tight mb-8">
+        <h2 className="font-heading font-bold text-4xl md:text-6xl tracking-tight mb-8 pb-2 bg-gradient-to-r from-copper via-amber-300 to-copper bg-clip-text text-transparent">
           Try Badger.
         </h2>
 
