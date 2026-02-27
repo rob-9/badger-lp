@@ -88,7 +88,7 @@ function Navbar() {
 
         <a
           href="#waitlist"
-          className="text-sm text-copper transition-colors duration-200 hover:opacity-80 mr-2"
+          className="text-sm text-copper transition-all duration-200 hover:opacity-80 mr-2 focus:outline-none focus:ring-2 focus:ring-copper focus:ring-offset-2 focus:ring-offset-[#14120b] rounded-sm"
         >
           Join Waitlist
         </a>
@@ -628,7 +628,7 @@ function Hero() {
         <div ref={ctaRef} className="opacity-0">
           <a
             href="#waitlist"
-            className="inline-flex items-center gap-2.5 px-6 py-3 text-sm font-medium rounded-full transition-all duration-200 hover:opacity-90"
+            className="inline-flex items-center gap-2.5 px-6 py-3 text-sm font-medium rounded-full transition-all duration-200 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-copper focus:ring-offset-2 focus:ring-offset-[#14120b] active:scale-[0.98]"
             style={{ backgroundColor: '#edecec', color: '#14120b' }}
           >
             Waitlist
@@ -1662,7 +1662,7 @@ function GetStarted() {
               <button
                 type="submit"
                 disabled={status === 'submitting'}
-                className="px-5 py-2.5 bg-cream text-charcoal text-sm font-semibold rounded-xl hover:bg-cream/90 transition-colors shrink-0 disabled:opacity-50"
+                className="px-5 py-2.5 bg-cream text-charcoal text-sm font-semibold rounded-xl hover:bg-cream/90 transition-all shrink-0 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-copper focus:ring-offset-2 focus:ring-offset-[#14120b] active:scale-[0.98]"
               >
                 {status === 'submitting' ? '...' : 'Join'}
               </button>
