@@ -1769,7 +1769,7 @@ export default function HomeScreen() {
       const target = document.getElementById(id)
       if (!target) return
       e.preventDefault()
-      container.scrollTo({ top: target.offsetTop, behavior: 'smooth' })
+      container.scrollTo({ top: target.getBoundingClientRect().top + container.scrollTop, behavior: 'smooth' })
     }
     container.addEventListener('click', handleClick)
     return () => container.removeEventListener('click', handleClick)
