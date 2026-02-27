@@ -1655,6 +1655,8 @@ function GetStarted() {
                 onChange={(e) => { setEmail(e.target.value); setErrorMsg('') }}
                 placeholder="you@example.com"
                 autoComplete="off"
+                aria-invalid={status === 'error'}
+                aria-describedby={errorMsg ? 'waitlist-error' : undefined}
                 className="flex-1 px-4 py-2.5 bg-transparent border border-cream/10 rounded-xl text-sm text-cream placeholder:text-cream/25 focus:outline-none focus:border-copper/50 transition-colors [&:-webkit-autofill]:[-webkit-text-fill-color:#f2f0e9] [&:-webkit-autofill]:[font-family:inherit] [&:-webkit-autofill]:[-webkit-box-shadow:0_0_0_1000px_#14120b_inset] [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s]"
               />
               <button
@@ -1666,7 +1668,7 @@ function GetStarted() {
               </button>
             </form>
             {errorMsg && (
-              <p className="text-xs text-red-400 mt-2 text-left pl-1">{errorMsg}</p>
+              <p id="waitlist-error" role="alert" className="text-xs text-red-400 mt-2 text-left pl-1">{errorMsg}</p>
             )}
           </div>
         )}
