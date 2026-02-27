@@ -417,17 +417,10 @@ function HeroReaderView() {
                         {before}
                         <span
                           style={{
-                            background: 'linear-gradient(to right, rgba(217,149,95,0.12) 100%, transparent 100%)',
-                            backgroundSize: showHighlight ? '100% 100%' : '0% 100%',
-                            backgroundRepeat: 'no-repeat',
-                            transition: 'background-size 800ms ease-out, color 400ms ease-out, text-decoration-color 400ms ease-out',
-                            color: showHighlight ? 'rgba(212,212,212,0.9)' : 'rgba(212,212,212,0.5)',
-                            textDecoration: 'underline',
-                            textDecorationColor: showHighlight ? 'rgba(217, 149, 95, 0.35)' : 'transparent',
+                            ...getHighlightStyle(showHighlight),
+                            padding: '2px 3px',
                             textUnderlineOffset: '3px',
                             textDecorationThickness: '1.5px',
-                            borderRadius: '3px',
-                            padding: '2px 3px',
                           }}
                         >
                           {target}
@@ -746,21 +739,7 @@ function SpoilerShieldDemo({ active }: { active: boolean }) {
               >
                 <span>{line.text}</span>
                 {line.highlight && (
-                  <span
-                    style={{
-                      background: 'linear-gradient(to right, rgba(217,149,95,0.15) 100%, transparent 100%)',
-                      backgroundSize: isHl ? '100% 100%' : '0% 100%',
-                      backgroundRepeat: 'no-repeat',
-                      transition: 'background-size 800ms ease-out, color 400ms ease-out, text-decoration-color 400ms ease-out',
-                      color: isHl ? '#d4d4d4' : 'rgba(212,212,212,0.6)',
-                      borderRadius: '3px',
-                      padding: '1px 3px',
-                      textDecorationLine: 'underline',
-                      textDecorationStyle: 'solid' as const,
-                      textDecorationColor: isHl ? 'rgba(217,149,95,0.4)' : 'transparent',
-                      textUnderlineOffset: '2px',
-                    }}
-                  >
+                  <span style={getHighlightStyle(isHl)}>
                     {line.highlight}
                   </span>
                 )}
@@ -880,21 +859,7 @@ function PatternDetectionDemo({ active }: { active: boolean }) {
             return (
               <p key={i} className="text-[11px] leading-[1.8]" style={{ fontFamily: 'Georgia, serif' }}>
                 <span className="text-[#d4d4d4]/60">{line.text}</span>
-                <span
-                  style={{
-                    background: 'linear-gradient(to right, rgba(217,149,95,0.15) 100%, transparent 100%)',
-                    backgroundSize: isHl ? '100% 100%' : '0% 100%',
-                    backgroundRepeat: 'no-repeat',
-                    transition: 'background-size 800ms ease-out, color 400ms ease-out, text-decoration-color 400ms ease-out',
-                    color: isHl ? '#d4d4d4' : 'rgba(212,212,212,0.6)',
-                    borderRadius: '3px',
-                    padding: '1px 3px',
-                    textDecorationLine: 'underline',
-                    textDecorationStyle: 'solid' as const,
-                    textDecorationColor: isHl ? 'rgba(217,149,95,0.4)' : 'transparent',
-                    textUnderlineOffset: '2px',
-                  }}
-                >
+                <span style={getHighlightStyle(isHl)}>
                   {line.highlight}
                 </span>
                 <span className="text-[#d4d4d4]/60">{line.rest}</span>
@@ -1082,6 +1047,22 @@ function MemoryRecallDemo({ active }: { active: boolean }) {
 
 function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+function getHighlightStyle(active: boolean): React.CSSProperties {
+  return {
+    background: 'linear-gradient(to right, rgba(217,149,95,0.15) 100%, transparent 100%)',
+    backgroundSize: active ? '100% 100%' : '0% 100%',
+    backgroundRepeat: 'no-repeat',
+    transition: 'background-size 800ms ease-out, color 400ms ease-out, text-decoration-color 400ms ease-out',
+    color: active ? '#d4d4d4' : 'rgba(212,212,212,0.6)',
+    borderRadius: '3px',
+    padding: '1px 3px',
+    textDecorationLine: 'underline',
+    textDecorationStyle: 'solid',
+    textDecorationColor: active ? 'rgba(217,149,95,0.4)' : 'transparent',
+    textUnderlineOffset: '2px',
+  }
 }
 
 function useInView(ref: React.RefObject<HTMLElement | null>, threshold = 0.3) {
@@ -1354,21 +1335,7 @@ function ReaderVisual({ active }: { active: boolean }) {
       <div className="px-3 py-2.5 relative">
         <p className="text-[10px] leading-[1.85] text-white/50" style={{ fontFamily: 'Georgia, serif' }}>
           He stretched out his arms toward the dark water, and I could have sworn{' '}
-          <span
-            style={{
-              background: 'linear-gradient(to right, rgba(217,149,95,0.15) 100%, transparent 100%)',
-              backgroundSize: showHighlight ? '100% 100%' : '0% 100%',
-              backgroundRepeat: 'no-repeat',
-              transition: 'background-size 800ms ease-out, color 400ms ease-out, text-decoration-color 400ms ease-out',
-              color: showHighlight ? '#d4d4d4' : 'rgba(255,255,255,0.5)',
-              borderRadius: '2px',
-              padding: '0 2px',
-              textDecorationLine: 'underline',
-              textDecorationStyle: 'solid' as const,
-              textDecorationColor: showHighlight ? 'rgba(217,149,95,0.4)' : 'transparent',
-              textUnderlineOffset: '2px',
-            }}
-          >
+          <span style={getHighlightStyle(showHighlight)}>
             he was trembling
           </span>.
           A single green light, minute and far away.
